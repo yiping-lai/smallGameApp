@@ -1,0 +1,26 @@
+<%- include("partials/header") %>
+
+
+<h3> Q: <%=question.title%> </h3>
+<form action="/questions/<%=question._id%>" name='myForm' method="POST">
+	<% for (var i =0; i <question.options.length;  i++ ) { %>
+		<h3>
+			<input type="radio" type="number" name="optionSelected" value="<%=i%>"> <%=question.options[i]%>
+		</h3>
+	<% } %>
+	<button>
+		Submit
+	</button>
+</form>
+
+
+<% if (lastStatus) {%>
+	<h3> Your last answer was <%=lastStatus%> </h3>
+<% }%>
+
+<script type="text/javascript">
+	window.onload=function(){ 
+		window.setTimeout(function() { document.myForm.submit(); }, 15000);
+	};
+</script>
+<%- include("partials/footer") %>

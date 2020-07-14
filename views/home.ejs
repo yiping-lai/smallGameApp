@@ -1,0 +1,24 @@
+<%- include("partials/header") %>
+
+<% if (user){ %>
+	<h1>
+		Your UserID: <%=user._id%>
+	</h1>
+	<form action="/questions/0" method="GET">
+		<button>
+			Enter Game
+		</button>
+	</form>
+<%}else{%>
+	<h1>
+		Sign up form
+	</h1>
+	<form action="/register" method="POST">
+		<input type="text" name="username" placeholder="email">
+		<button>
+			Submit
+		</button>
+	</form>
+<%}%>
+
+<%- include("partials/footer") %>
