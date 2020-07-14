@@ -117,6 +117,15 @@ function isLoggedIn(req,res,next){
 	}
 	res.redirect("/register");
 }
-app.listen(3000,function(){
-	console.log("Server started...");
-})
+
+
+
+if (process.env.DEVELOPER==='1'){
+	app.listen(3000, function() { 
+		console.log('Server listening on port 3000'); 
+	});
+}else{
+	app.listen(process.env.PORT, process.env.IP, function(){
+  		console.log('Server listening on port 3000'); 
+	});
+};
