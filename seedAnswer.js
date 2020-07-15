@@ -46,38 +46,23 @@ var data = [
     }	
 ];
 
-function seedDB(){
-   //Remove all 
-	User.remove({},function(err){
-	   if(err){
-		   console.log(err);
-	   }
-   	});
-   
-	Answer.remove({},function(err){
-	   if(err){
-		   console.log(err);
-	   }
-   	});
-	
-	console.log('Questions start');
-	Question.remove({}, function(err){
-		if(err){
-			console.log(err);
-		}else{
-			data.forEach(function(seed){
-				Question.create({_id:seed._id,title:seed.title},function(err,question){
-					if(err){
-						console.log(err);
-					}else{
-						console.log('Question created');
-					}
-					
-				});
-			});
+function seedAnswer(){
+	data.forEach(function(seed){
+		seed.options.forEach(function(option){
+			Answer.create(option,function(err,answer){
+				if(err){
+					console.log(err);
+				}else{
+					console.log('Answer created');
+					Question.findById(seed._id,function(err,question){
+						question.answerOptions.push(answer);
+						question.save();
+					});
+				}
 				
-		}
-	});
+			})
+		});
+	})
 };
 
-module.exports = seedDB;
+module.exports = seedAnswer;

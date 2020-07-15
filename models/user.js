@@ -4,12 +4,10 @@ var passportLocalMongoose=require("passport-local-mongoose");
 var userSchema=new mongoose.Schema({
 	username:String,
 	passowrd:String,
-	score:{type:Number, default:0},
-	answers:[{type:String}],
-	questionsAnswered:{type:Number, default:0}
+	answers:{type:Array,
+			 default:[-1,-1,-1,-1,-1]},
 });
 
-// add methods to the user schema
 userSchema.plugin(passportLocalMongoose);
 
 module.exports=mongoose.model("User",userSchema);

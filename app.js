@@ -7,12 +7,14 @@ var express=require("express"),
 	passportLocalMongoose=require("passport-local-mongoose"),
 	User=require("./models/user"),
 	Question=require("./models/question"),
+	Answer=require("./models/answer"),
 	flash=require("connect-flash"),
-	seedDB      = require("./seeds");
+	seedDB      = require("./seeds"),
+	seedAnswer      = require("./seedAnswer");	
 
 
 //=========================
-// Setup app
+// Config app
 //=========================
 
 mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true }); 
@@ -43,6 +45,7 @@ app.use(function(req,res,next){
 
 
 seedDB();
+//seedAnswer();
 
 //=========================
 // Routes
@@ -57,63 +60,93 @@ app.get("/",function(req,res){
 
 // final page. Display results.
 app.get("/final",isLoggedIn,function(req,res){
-	res.render("gameEnd",{user:req.user,lastStatus:req.query.status});
+	// calculate score and make sure all questions are answered.
+	var score=0;
+	for(var i=0; i<req.user.answers.length;i++){
+		if (req.user.answers[i]==-1){
+			res.redirect("/questions/"+i);
+			return;
+		}
+		score+=req.user.answers[i];
+	}
+	var lastStatus='wrong';
+	if (req.user.answers[req.user.answers.length-1]==20){
+		lastStatus='right'
+	}
+	
+	res.render("gameEnd",{user:req.user,score:score,lastStatus:lastStatus});
 });
 
 
 // GetQuestion API: getQuestion logic		
 app.get("/questions/:id",isLoggedIn,function(req,res){
-		// if question doesn't exist, go to final page.	
-		var id_value=Number(req.params.id);
-		if (id_value<0 || id_value>4){
-			res.redirect('/final');
-		}
+	var id_value=Number(req.params.id);
+	var lastStatus;
 	
-		Question.findById(req.params.id,function(err,foundQuestion){
-			// invalid request
+	// if question id doesn't exist, go to final page
+	if (id_value<0 || id_value>4){
+		res.redirect('/final');
+		
+	// if previous question not answered, go to previous question
+	}else if(id_value>0 && req.user.answers[id_value-1]==-1){
+		res.redirect('/questions/'+(id_value-1));
+	
+	// if current question answered, go to next question
+	}else if(req.user.answers[id_value]!=-1){
+		res.redirect('/questions/'+(id_value+1));
+	
+	// answer current question
+	}else{
+		// update lastStatus
+		if(id_value>0){
+			if (req.user.answers[id_value-1]==0){
+				lastStatus='wrong';
+			}else{
+				lastStatus='right';
+			}
+		}
+		Question.findById(req.params.id).populate("answerOptions").exec(function(err,foundQuestion){
 			if (err){
 				req.flash("error",err);
-				res.redirect('/final');
+				res.redirect('/');
 			}else{
-				res.render("show",{question:foundQuestion,lastStatus:req.query.status});
+				res.render("show",{question:foundQuestion,lastStatus:lastStatus});
 			}
 		});
+
+	}
+
 });
 
 // Submit answer API: check if answer if correct and go to next question.
 app.post("/questions/:id",isLoggedIn,function(req,res){
-		Question.findById(req.params.id,function(err,foundQuestion){
-			if (err){
-				console.log("Error in submit question.");
-			}else{
-				
-				// update score and ansStatus 
-				var ansStatus='wrong';
-				if (foundQuestion.answer==req.body.optionSelected){
-					ansStatus='right';
-					req.user.score+=20;
-				}
-				req.user.answers.push(ansStatus);
-				User.findByIdAndUpdate(req.user._id,req.user,function(err,updatedUser){
-					if (err){
-						console.log(err);
-					}
-				})	
-				
-
-				// redirect to next question
-				res.redirect('/questions/'+(Number(req.params.id)+1)+'/?status='+ansStatus);		
 	
-			}
-		});
+	// update answeres
+	if (req.body.optionSelected=='true'){
+		ansStatus='right';
+		req.user.answers[Number(req.params.id)]=20;
+	}else{
+		req.user.answers[Number(req.params.id)]=0;
+		if(req.body.optionSelected!='false'){
+			req.flash("error","Time is over.");
+		}
+	}
+
+	User.findByIdAndUpdate(req.user._id,req.user,function(err,updatedUser){
+		if (err){
+			console.log(err);
+		}
+	});
+
+	// go to next question
+	res.redirect('/questions/'+(Number(req.params.id)+1));		
+
 });
 
 
 
 // handling user sign up
 app.post("/register",function(req,res){
-	// validate email format
-	
 	req.body.password='fakePassword';
 ;	User.register(new User({username:req.body.username}),req.body.password,function(err,user){
 		if(err){
@@ -121,10 +154,11 @@ app.post("/register",function(req,res){
 			console.log(err);
 			req.flash("error","Email has been registered. Please try a different email.");
 			return res.redirect("/");			
-		}
-		// log user in with serialized method with type---local
-		passport.authenticate("local")(req,res,function(){
-			res.redirect("/");
+		}else{
+			// log user in with serialized method with type---local
+			passport.authenticate("local")(req,res,function(){
+			res.redirect("/");			
+			}
 		});
 		
 	});
@@ -139,6 +173,16 @@ app.get("/logout",function(req,res){
 
 
 
+if (process.env.DEVELOPER==='1'){
+	app.listen(3000, function() { 
+		console.log('Server listening on port 3000'); 
+	});
+}else{
+	app.listen(process.env.PORT, process.env.IP, function(){
+  		console.log('Server listening on port 3000'); 
+	});
+};
+
 //=========================
 // middleware
 //=========================
@@ -151,12 +195,3 @@ function isLoggedIn(req,res,next){
 
 
 
-if (process.env.DEVELOPER==='1'){
-	app.listen(3000, function() { 
-		console.log('Server listening on port 3000'); 
-	});
-}else{
-	app.listen(process.env.PORT, process.env.IP, function(){
-  		console.log('Server listening on port 3000'); 
-	});
-};

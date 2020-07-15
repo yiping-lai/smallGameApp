@@ -6,11 +6,11 @@
 	<div style="width: 30%; margin: 25px auto;">
 		<h4>You have 15 seconds to answer the question.</h4>
 		<form action="/questions/<%=question._id%>" name='myForm' method="POST">
-			<% for (var i =0; i <question.options.length;  i++ ) { %>
+			<% for (var i =0; i <question.answerOptions.length;  i++ ) { %>
 				<div class="radio">
 				  <label>
-					<input type="radio" name="optionSelected" value="<%=i%>">
-					<%=question.options[i]%>
+					<input type="radio" name="optionSelected" value="<%=question.answerOptions[i].isRight%>">
+					<%=question.answerOptions[i].content%>
 				  </label>
 				</div>
 			<% } %>
@@ -20,7 +20,7 @@
 			
 		</form>
 		<% if (lastStatus) {%>
-			<h4> Your last answer was <%=lastStatus%> </h4>
+			<h4> Your last answer was <%=lastStatus%>. </h4>
 		<% }%>		
 	</div>		
 
