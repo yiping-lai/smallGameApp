@@ -9,7 +9,7 @@ var express=require("express"),
 	Question=require("./models/question"),
 	seedDB      = require("./seeds");
 
-mongoose.connect('mongodb://localhost:27017/backend_test', { useNewUrlParser: true }); 
+mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true }); 
 app.set("view engine","ejs");
 app.use(bodyParser.urlencoded({extended:true}));
 
@@ -32,7 +32,7 @@ app.use(function(req,res,next){
 });
 
 
-seedDB();
+//seedDB();
 
 //=========================
 // Routes
