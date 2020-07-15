@@ -6,7 +6,13 @@
 		<h3> Your last answer was <%=lastStatus%>. </h3>
 		<h3>Game over!!</h3>
 		<h3>Your score is: <%=user.score%></h3>
-	</div>		
+		<form action="/logout"method="GET">
+			<h3>Play Again with a different email?</h3>
+			<div class="form-group">
+				<button class="btn btn-default">Log out</button>
+			</div>
+		</form>
+	</div>	
 </div>
 
 <%- include("partials/footer") %>

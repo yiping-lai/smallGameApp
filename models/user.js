@@ -5,7 +5,8 @@ var userSchema=new mongoose.Schema({
 	username:String,
 	passowrd:String,
 	score:{type:Number, default:0},
-	answers:[{type:String}]
+	answers:[{type:String}],
+	questionsAnswered:{type:Number, default:0}
 });
 
 // add methods to the user schema

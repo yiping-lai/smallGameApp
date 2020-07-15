@@ -13,13 +13,13 @@ var data = [
         _id:1,
 		title: "Which colors must be mixed together to make green?", 
 		options:['Orange and blue','Red and blue','Blue and yellow','Black and yellow'],
-        answer: '2'
+        answer: '1'
     },
 	    {
         _id:2,
 		title: "In which country is the Leaning Tower of Pisa located?", 
 		options:['England','Spain','France','Italy'],
-        answer: 'Italy'
+        answer: '3'
     },
     {
         _id:3,

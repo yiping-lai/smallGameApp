@@ -7,10 +7,17 @@ var express=require("express"),
 	passportLocalMongoose=require("passport-local-mongoose"),
 	User=require("./models/user"),
 	Question=require("./models/question"),
+	flash=require("connect-flash"),
 	seedDB      = require("./seeds");
+
+
+//=========================
+// Setup app
+//=========================
 
 mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true }); 
 app.set("view engine","ejs");
+app.use(flash());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static(__dirname+"/public")); 
 
@@ -26,9 +33,11 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// make userid available for all routes
+// make global variables
 app.use(function(req,res,next){
 	res.locals.currentUser=req.user;
+	res.locals.error=req.flash("error");
+	res.locals.success=req.flash("success");
 	next();
 });
 
@@ -39,28 +48,39 @@ seedDB();
 // Routes
 //=========================
 
+
+// Signup API: show sign up or start game based on user status
 app.get("/",function(req,res){
 	res.render("home",{user:req.user});
 });
 
 
+// final page. Display results.
 app.get("/final",isLoggedIn,function(req,res){
 	res.render("gameEnd",{user:req.user,lastStatus:req.query.status});
 });
 
 
-// getQuestion logic
+// GetQuestion API: getQuestion logic		
 app.get("/questions/:id",isLoggedIn,function(req,res){
+		// if question doesn't exist, go to final page.	
+		var id_value=Number(req.params.id);
+		if (id_value<0 || id_value>4){
+			res.redirect('/final');
+		}
+	
 		Question.findById(req.params.id,function(err,foundQuestion){
+			// invalid request
 			if (err){
-				console.log("Error in get question.");
+				req.flash("error",err);
+				res.redirect('/final');
 			}else{
-				res.render("show",{question:foundQuestion,lastStatus:req.query.status});	
+				res.render("show",{question:foundQuestion,lastStatus:req.query.status});
 			}
 		});
 });
 
-// submit logic
+// Submit answer API: check if answer if correct and go to next question.
 app.post("/questions/:id",isLoggedIn,function(req,res){
 		Question.findById(req.params.id,function(err,foundQuestion){
 			if (err){
@@ -81,12 +101,9 @@ app.post("/questions/:id",isLoggedIn,function(req,res){
 				})	
 				
 
-				// redirect to next question or final page
-				if(req.params.id==4){
-					res.redirect('/final/?status='+ansStatus);
-				}else{
-					res.redirect('/questions/'+(Number(req.params.id)+1)+'/?status='+ansStatus);		
-				}	
+				// redirect to next question
+				res.redirect('/questions/'+(Number(req.params.id)+1)+'/?status='+ansStatus);		
+	
 			}
 		});
 });
@@ -95,12 +112,15 @@ app.post("/questions/:id",isLoggedIn,function(req,res){
 
 // handling user sign up
 app.post("/register",function(req,res){
+	// validate email format
+	
 	req.body.password='fakePassword';
 ;	User.register(new User({username:req.body.username}),req.body.password,function(err,user){
 		if(err){
 			// use return to short circuit everything
 			console.log(err);
-			res.redirect("/");
+			req.flash("error","Email has been registered. Please try a different email.");
+			return res.redirect("/");			
 		}
 		// log user in with serialized method with type---local
 		passport.authenticate("local")(req,res,function(){
@@ -110,13 +130,23 @@ app.post("/register",function(req,res){
 	});
 });
 
+// logout
+app.get("/logout",function(req,res){
+	req.logout();
+	req.flash("success","Logged You Out.");
+	res.redirect("/")
+})
 
+
+
+//=========================
 // middleware
+//=========================
 function isLoggedIn(req,res,next){
 	if(req.isAuthenticated()){
 		return next();
 	}
-	res.redirect("/register");
+	res.redirect("/");
 }
 
 
