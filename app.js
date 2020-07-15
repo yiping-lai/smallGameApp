@@ -44,8 +44,8 @@ app.use(function(req,res,next){
 });
 
 
-//seedDB();
-seedAnswer();
+seedDB();
+//seedAnswer();
 
 //=========================
 // Routes
@@ -158,8 +158,8 @@ app.post("/register",function(req,res){
 			// log user in with serialized method with type---local
 			passport.authenticate("local")(req,res,function(){
 			res.redirect("/");			
-			}
-		});
+			});
+		};
 		
 	});
 });
