@@ -44,8 +44,8 @@ app.use(function(req,res,next){
 });
 
 
-seedDB();
-//seedAnswer();
+//seedDB();
+seedAnswer();
 
 //=========================
 // Routes
