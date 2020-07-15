@@ -5,33 +5,33 @@ var User   = require("./models/user");
 var data = [
     {
         _id:0,
-		title: "question 0", 
-		options:['A','B','C','D'],
-        answer: '1'
+		title: "Name the currency used in Japan.", 
+		options:['Taka','Dinar','Ngultrum','Yen'],
+        answer: '3'
     },
     {
         _id:1,
-		title: "question 1", 
-		options:['A','B','C','D'],
+		title: "Which colors must be mixed together to make green?", 
+		options:['Orange and blue','Red and blue','Blue and yellow','Black and yellow'],
         answer: '2'
     },
 	    {
         _id:2,
-		title: "question 2", 
-		options:['A','B','C','D'],
-        answer: '1'
+		title: "In which country is the Leaning Tower of Pisa located?", 
+		options:['England','Spain','France','Italy'],
+        answer: 'Italy'
     },
     {
         _id:3,
-		title: "question 3", 
-		options:['A','B','C','D'],
-        answer: '2'
+		title: "Which animal is the tallest in the world?", 
+		options:['Elephant','Giraffe','Zebra','Kangaroo'],
+        answer: '1'
     },
     {
         _id:4,
-		title: "question 4", 
-		options:['A','B','C','D'],
-        answer: '2'
+		title: "How many Earths could fit inside the sun?", 
+		options:['1','130','1300','1.3 million'],
+        answer: '3'
     }	
 ]
 

@@ -1,22 +1,31 @@
 <%- include("partials/header") %>
 
 
-<h3> Q: <%=question.title%> </h3>
-<form action="/questions/<%=question._id%>" name='myForm' method="POST">
-	<% for (var i =0; i <question.options.length;  i++ ) { %>
-		<h3>
-			<input type="radio" type="number" name="optionSelected" value="<%=i%>"> <%=question.options[i]%>
-		</h3>
-	<% } %>
-	<button>
-		Submit
-	</button>
-</form>
+<div class="row">
+	<h1 class="text-center">Question: <%=question.title%></h1>
+	<div style="width: 30%; margin: 25px auto;">
+		<h4>You have 15 seconds to answer the question.</h4>
+		<form action="/questions/<%=question._id%>" name='myForm' method="POST">
+			<% for (var i =0; i <question.options.length;  i++ ) { %>
+				<div class="radio">
+				  <label>
+					<input type="radio" name="optionSelected" value="<%=i%>">
+					<%=question.options[i]%>
+				  </label>
+				</div>
+			<% } %>
+			<div class="form-group">
+				<button class="btn btn-default">Submit</button>
+			</div>
+			
+		</form>
+		<% if (lastStatus) {%>
+			<h4> Your last answer was <%=lastStatus%> </h4>
+		<% }%>		
+	</div>		
 
+</div>
 
-<% if (lastStatus) {%>
-	<h3> Your last answer was <%=lastStatus%> </h3>
-<% }%>
 
 <script type="text/javascript">
 	window.onload=function(){ 

@@ -12,6 +12,7 @@ var express=require("express"),
 mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true }); 
 app.set("view engine","ejs");
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(express.static(__dirname+"/public")); 
 
 // set up password for user auth 
 app.use(require("express-session")({
@@ -32,7 +33,7 @@ app.use(function(req,res,next){
 });
 
 
-//seedDB();
+seedDB();
 
 //=========================
 // Routes

@@ -1,9 +1,12 @@
 <%- include("partials/header") %>
-<h1>
-	UserID: <%=user._id%>
-</h1>
-<h3> Your last answer was <%=lastStatus%> </h3>
-<h3>Game over</h3>
-<h3>Your score is: <%=user.score%></h3>
+
+<div class="row">
+	<h1 style="text-align: center">Your UserID is <%=user._id%></h1>
+	<div style="width: 30%; margin: 25px auto;">
+		<h3> Your last answer was <%=lastStatus%>. </h3>
+		<h3>Game over!!</h3>
+		<h3>Your score is: <%=user.score%></h3>
+	</div>		
+</div>
 
 <%- include("partials/footer") %>

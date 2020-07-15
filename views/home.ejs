@@ -1,24 +1,37 @@
 <%- include("partials/header") %>
 
+
+
 <% if (user){ %>
-	<h1>
-		Your UserID: <%=user._id%>
-	</h1>
-	<form action="/questions/0" method="GET">
-		<button>
-			Enter Game
-		</button>
-	</form>
+	
+	<div class="row">
+		<h1 style="text-align: center">Your UserID is <%=user._id%></h1>
+		<div style="width: 30%; margin: 25px auto;">
+			<form action="/questions/0" method="GET">
+				<div class="form-group">
+					<button class="btn btn-lg btn-primary btn-block">Enter Game</button>
+				</div>		
+			</form>
+		</div>		
+	</div>
+
 <%}else{%>
-	<h1>
-		Sign up form
-	</h1>
-	<form action="/register" method="POST">
-		<input type="text" name="username" placeholder="email">
-		<button>
-			Submit
-		</button>
-	</form>
+
+	<div class="row">
+		<h1 style="text-align: center; margin: 50px auto;">Sign up to start the game</h1>
+		<div style="width: 30%; margin: 25px auto;">
+			<form action="/register" method="post">
+				<div class="form-group">
+					<input class="form-control" type="text" name="username" placeholder="E-mail">
+				</div>
+				<div class="form-group">
+					<button class="btn btn-lg btn-primary btn-block">Submit</button>
+				</div>		
+			</form>
+		</div>
+	</div>
 <%}%>
+
+
 
 <%- include("partials/footer") %>
