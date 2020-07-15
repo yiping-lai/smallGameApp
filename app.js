@@ -45,7 +45,7 @@ app.use(function(req,res,next){
 
 
 //seedDB();
-seedAnswer();
+//seedAnswer();
 
 //=========================
 // Routes
@@ -128,7 +128,7 @@ app.post("/questions/:id",isLoggedIn,function(req,res){
 	}else{
 		req.user.answers[Number(req.params.id)]=0;
 		if(req.body.optionSelected!='false'){
-			req.flash("error","Time is over.");
+			req.flash("error","Time is up.");
 		}
 	}
 
