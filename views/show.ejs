@@ -4,7 +4,7 @@
 <div class="row">
 	<h1 class="text-center">Question: <%=question.title%></h1>
 	<div style="width: 30%; margin: 25px auto;">
-		<h4>You have 15 seconds to answer the question.</h4>
+		<h4>You have <span id='timer'>15</span> seconds to answer the question.</h4>
 		<form action="/questions/<%=question._id%>" name='myForm' method="POST">
 			<% for (var i =0; i <question.answerOptions.length;  i++ ) { %>
 				<div class="radio">
@@ -28,8 +28,17 @@
 
 
 <script type="text/javascript">
+	var timer=document.querySelector('#timer');
 	window.onload=function(){ 
-		window.setTimeout(function() { document.myForm.submit(); }, 15000);
+		var countDown=15;
+		window.setInterval(function(){
+			countDown--;
+			timer.textContent=countDown;
+			
+			if(countDown==0){
+				document.myForm.submit();
+			}
+		},1000);
 	};
 </script>
 <%- include("partials/footer") %>

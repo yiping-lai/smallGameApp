@@ -16,7 +16,7 @@ var express=require("express"),
 //=========================
 // Config app
 //=========================
-
+//mongoose.connect('mongodb://localhost:27017/backend_test', { useNewUrlParser: true }); 
 mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true }); 
 app.set("view engine","ejs");
 app.use(flash());
