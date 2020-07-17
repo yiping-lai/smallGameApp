@@ -1,4 +1,4 @@
-# Hangman App
+# Small Game App
 
 ## Introduction
 This is a website where users can play Trivia Game. User need to register with an email in order to start the game. See demo here.
