@@ -1,7 +1,7 @@
 # Small Game App
 
 ## Introduction
-This is a website where users can play Trivia Game. User need to register with an email in order to start the game. See demo here.
+This is a website where users can play Trivia Game. Users need to register with an email in order to start the game. See demo here.
 
 ## About the Stack
 Frontend: EJS, CSS, Bootstrap3, Javascript
